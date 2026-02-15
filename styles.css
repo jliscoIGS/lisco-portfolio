@@ -1,0 +1,621 @@
+/* === Variables === */
+:root {
+    --bg-page: #010409;
+    --bg-terminal: #0d1117;
+    --bg-titlebar: #161b22;
+    --text-primary: #c9d1d9;
+    --text-muted: #8b949e;
+    --accent-blue: #58a6ff;
+    --accent-green: #3fb950;
+    --accent-red: #f85149;
+    --accent-yellow: #d29922;
+    --border-color: #30363d;
+    --font-mono: 'Cascadia Code', 'Cascadia Mono', 'JetBrains Mono', 'Consolas', monospace;
+    --terminal-max-w: 720px;
+    --app-max-w: 1160px;
+    --terminal-w: 400px;
+}
+
+/* === Reset === */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* === Page === */
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+/* === App Container (split pane) === */
+.app-container {
+    display: flex;
+    gap: 1rem;
+    max-width: var(--app-max-w);
+    height: 85vh;
+    width: 100%;
+    align-items: flex-start;
+}
+
+/* === Terminal Window === */
+.terminal {
+    width: var(--terminal-w);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-terminal);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+/* === Detail Panel === */
+.detail-panel {
+    flex: 1;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    min-height: 0;
+}
+
+.detail-content {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.detail-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.detail-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.detail-content::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+
+.detail-content::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-muted);
+}
+
+/* === Title Bar === */
+.terminal-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    background-color: var(--bg-titlebar);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    user-select: none;
+    height: 36px;
+}
+
+.titlebar-left {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.titlebar-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 100%;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.titlebar-tab {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 1rem;
+    font-size: 12px;
+    color: var(--text-primary);
+    background-color: var(--bg-terminal);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+
+/* === Terminal Body === */
+.terminal-body {
+    display: flex;
+    flex-direction: column;
+    cursor: text;
+}
+
+/* Header (intro + quick links) */
+.terminal-header {
+    padding: 1rem 1.25rem 0.75rem;
+}
+
+/* Output line types (used in header) */
+.output-line {
+    min-height: 1.6em;
+}
+
+.output-bold {
+    font-weight: 700;
+    color: #e6edf3;
+}
+
+.output-muted {
+    color: var(--text-muted);
+}
+
+.output-separator {
+    color: var(--border-color);
+}
+
+/* Clickable command spans */
+.cmd-link {
+    color: var(--accent-blue);
+    cursor: pointer;
+    text-decoration: none;
+    border-bottom: 1px dashed transparent;
+    transition: border-color 0.15s;
+}
+
+.cmd-link:hover,
+.cmd-link:focus-visible {
+    border-bottom-color: var(--accent-blue);
+    outline: none;
+}
+
+/* External links in output */
+.ext-link {
+    color: var(--accent-blue);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-blue);
+}
+
+.ext-link:hover,
+.ext-link:focus-visible {
+    color: #79c0ff;
+    border-bottom-color: #79c0ff;
+    outline: none;
+}
+
+/* Tag pills for project tech */
+.tag {
+    display: inline-block;
+    background-color: rgba(88, 166, 255, 0.1);
+    color: var(--accent-blue);
+    padding: 0 0.4em;
+    border-radius: 3px;
+    font-size: 0.85em;
+    margin-right: 0.25em;
+}
+
+/* Skills grid layout */
+.skills-section {
+    display: block;
+}
+
+.skills-category {
+    margin-bottom: 0.5em;
+}
+
+.skills-category-title {
+    color: var(--accent-green);
+    font-weight: 700;
+}
+
+/* === Detail Nav === */
+.detail-nav {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.nav-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    padding: 0.25em 0.6em;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.nav-btn:hover:not(:disabled) {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+}
+
+.nav-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+/* === Detail Card Styles === */
+.detail-card {
+    animation: fadeInCard 0.3s ease-out;
+}
+
+.detail-card h2 {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #e6edf3;
+    margin-bottom: 0.25rem;
+}
+
+.detail-card h3 {
+    font-size: 0.95em;
+    font-weight: 700;
+    color: #e6edf3;
+    margin-bottom: 0.15rem;
+}
+
+.detail-card p {
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    line-height: 1.7;
+}
+
+.detail-card .card-separator {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 1rem 0;
+}
+
+/* Welcome card */
+.welcome-card .welcome-name {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #e6edf3;
+}
+
+.welcome-card .welcome-title {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.welcome-card .welcome-commands {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    margin-top: 0.75rem;
+}
+
+.welcome-card .welcome-commands .cmd-link {
+    font-size: 0.95em;
+}
+
+/* Project card */
+.project-card {
+    background-color: var(--bg-titlebar);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.project-card h3 {
+    color: var(--accent-green);
+    margin-bottom: 0.35rem;
+}
+
+.project-card p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9em;
+}
+
+/* Skills grid in detail panel */
+.skills-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.skills-grid .skill-group h3 {
+    color: var(--accent-green);
+    margin-bottom: 0.5rem;
+}
+
+/* Pill layout */
+.pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+}
+
+.pill {
+    display: inline-block;
+    background-color: rgba(88, 166, 255, 0.1);
+    color: var(--accent-blue);
+    padding: 0.2em 0.6em;
+    border-radius: 4px;
+    font-size: 0.85em;
+}
+
+/* About facts */
+.about-facts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    margin-top: 0.75rem;
+}
+
+.about-fact {
+    display: flex;
+    gap: 0.75em;
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+.about-label {
+    color: var(--accent-green);
+    font-weight: 700;
+    min-width: 6em;
+    flex-shrink: 0;
+}
+
+/* Contact items */
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    padding: 0.6rem 0;
+}
+
+.contact-item .contact-label {
+    color: var(--text-muted);
+    min-width: 5em;
+    font-size: 0.85em;
+}
+
+/* Experience timeline */
+.exp-entry {
+    border-left: 2px solid var(--border-color);
+    padding-left: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.exp-entry:last-child {
+    margin-bottom: 0;
+}
+
+.exp-company h3 {
+    color: var(--accent-green);
+    margin-bottom: 0;
+}
+
+.exp-meta {
+    color: var(--text-muted);
+    font-size: 0.8em;
+}
+
+.exp-role {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1em;
+    margin-top: 0.4em;
+}
+
+.exp-title {
+    font-weight: 700;
+    color: #e6edf3;
+    font-size: 0.9em;
+}
+
+.exp-period {
+    color: var(--text-muted);
+    font-size: 0.8em;
+    white-space: nowrap;
+}
+
+.exp-details {
+    margin-top: 0.5em;
+    padding-left: 1.25em;
+    color: var(--text-primary);
+    font-size: 0.85em;
+    line-height: 1.7;
+}
+
+.exp-details li {
+    margin-bottom: 0.25em;
+}
+
+/* Links list */
+.links-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    margin-top: 0.5rem;
+}
+
+.links-list .ext-link {
+    font-size: 0.95em;
+}
+
+@keyframes fadeInCard {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Input Line (pinned at bottom) === */
+.input-line {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    flex-shrink: 0;
+    padding: 0.35rem 1.25rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.prompt {
+    color: var(--accent-green);
+    white-space: nowrap;
+    flex-shrink: 0;
+    user-select: none;
+    font-size: 0.85em;
+}
+
+.input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 30ch;
+}
+
+#command-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    line-height: 1.6;
+    outline: none;
+    caret-color: transparent;
+    padding: 0;
+}
+
+#command-input:focus {
+    caret-color: var(--text-primary);
+}
+
+#command-input:focus ~ .cursor-block {
+    display: none;
+}
+
+/* Blinking block cursor (visible when input is empty & unfocused or empty & focused) */
+.cursor-block {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.15em;
+    background-color: var(--text-primary);
+    animation: blink 1s step-end infinite;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.cursor-block.hidden {
+    display: none;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* === Responsive === */
+
+/* Below split-pane threshold: stack vertically, show detail below terminal */
+@media (max-width: 899px) {
+    .app-container {
+        flex-direction: column;
+        max-width: var(--terminal-max-w);
+        height: 85vh;
+    }
+
+    .terminal {
+        width: 100%;
+        flex-shrink: 0;
+    }
+
+    .detail-panel {
+        flex: 1;
+        min-height: 0;
+        border-top: 1px solid var(--border-color);
+        border-radius: 0 0 8px 8px;
+        padding: 1rem;
+    }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+        font-size: 13px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    body {
+        padding: 0;
+        align-items: stretch;
+        justify-content: stretch;
+        font-size: 13px;
+    }
+
+    .app-container {
+        max-width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        gap: 0;
+        border-radius: 0;
+    }
+
+    .terminal {
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+    }
+
+    .terminal-titlebar {
+        border-radius: 0;
+    }
+
+    .terminal-header {
+        padding: 0.75rem 1rem 0.5rem;
+    }
+
+    .input-line {
+        padding: 0.5rem 1rem;
+    }
+
+    .detail-panel {
+        border-radius: 0;
+        border: none;
+        border-top: 1px solid var(--border-color);
+    }
+
+    /* Prevent iOS auto-zoom */
+    #command-input {
+        font-size: 16px;
+    }
+}
+
+/* Extra small */
+@media (max-width: 380px) {
+    body {
+        font-size: 12px;
+    }
+}
